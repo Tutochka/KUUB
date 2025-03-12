@@ -35,6 +35,17 @@ namespace TeamPicker.UI
             SendUIEffectWithKey(40119, 119);
             SendTextWithKey(119, "Canvas/Title/Text", "PICK ONE SIDE!");
 
+            ulong firstGroupId = m_Configuration.GetSection("Active_Teams:Team_One").Get<ulong>();
+            var firstGroup = m_Configuration.GetSection("Teams").Get<List<TeamModel>>()
+                .Where(teamModel => (CSteamID)teamModel.ID == (CSteamID)firstGroupId).First();
+
+            ulong secondGroupId = m_Configuration.GetSection("Active_Teams:Team_Two").Get<ulong>();
+            var secondGroup = m_Configuration.GetSection("Teams").Get<List<TeamModel>>()
+                .Where(teamModel => (CSteamID)teamModel.ID == (CSteamID)secondGroupId).First();
+
+            SendTextWithKey(119, "Canvas/Buttons/Menu_Button1/Text", $"{firstGroup.Name}");
+            SendTextWithKey(119, "Canvas/Buttons/Menu_Button2/Text", $"{secondGroup.Name}");
+
             User.Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, true);
         }
 
@@ -45,7 +56,6 @@ namespace TeamPicker.UI
             ulong groupId = m_Configuration.GetSection("Active_Teams:Team_One").Get<ulong>();
             var group = m_Configuration.GetSection("Teams").Get<List<TeamModel>>()
                 .Where(teamModel => (CSteamID)teamModel.ID == (CSteamID)groupId).First();
-            User.PrintMessageAsync($"[Linq] {group.ID}, {group.Name}, {group.Spawn.ToString()}");
 
             var groupName = group.Name;
             Vector3 spawn = new Vector3(group.Spawn.X, group.Spawn.Y, group.Spawn.Z);
