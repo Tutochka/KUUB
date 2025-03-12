@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPicker", "TeamPicker\TeamPicker.csproj", "{4C4CC8D4-3100-4A61-AF38-52378A1ADEA1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4C4CC8D4-3100-4A61-AF38-52378A1ADEA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C4CC8D4-3100-4A61-AF38-52378A1ADEA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C4CC8D4-3100-4A61-AF38-52378A1ADEA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C4CC8D4-3100-4A61-AF38-52378A1ADEA1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A55741F4-6796-42B8-A638-72390199E5D4}
+	EndGlobalSection
+EndGlobal

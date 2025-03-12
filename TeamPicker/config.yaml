@@ -1,0 +1,29 @@
+Active_Teams:
+    Team_One: 3 # Use team ID.
+    Team_Two: 4 
+
+Teams:
+  - ID: 3
+    Name: "Blue"
+    Spawn:
+        X: 500.0
+        y: 30.0
+        z: 100.0
+  - ID: 4
+    Name: "Red"
+    Spawn:
+        X: 500.0
+        y: 30.0
+        z: 600.0
+  - ID: 5
+    Name: "Yellow"
+    Spawn:
+        X: 500.0
+        y: 30.0
+        z: 100.0
+  - ID: 6
+    Name: "Green"
+    Spawn:
+        X: 500.0
+        y: 30.0
+        z: 600.0
