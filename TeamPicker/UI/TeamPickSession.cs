@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using TeamPicker.Models;
 using System.Linq;
 using UnityEngine;
+using TeamPicker.Services;
 
 namespace TeamPicker.UI
 {
@@ -18,10 +19,14 @@ namespace TeamPicker.UI
     {
         private readonly MyOpenModPlugin m_Plugin;
         private readonly IConfiguration m_Configuration;
-        public TeamPickSession(UnturnedUser user, IServiceProvider serviceProvider, IPluginAccessor<MyOpenModPlugin> pluginAccesor, IConfiguration configuration) : base(user, serviceProvider)
+        private readonly ITeamInfoService m_TeamInfoService;
+        public TeamPickSession(UnturnedUser user, IServiceProvider serviceProvider,
+            IPluginAccessor<MyOpenModPlugin> pluginAccesor, IConfiguration configuration,
+            ITeamInfoService teamInfoService) : base(user, serviceProvider)
         {
             m_Plugin = pluginAccesor.Instance!;
             m_Configuration = configuration;
+            m_TeamInfoService = teamInfoService;
         }
 
         public override ushort EffectId => 40119;
@@ -58,8 +63,8 @@ namespace TeamPicker.UI
                 .Where(teamModel => (CSteamID)teamModel.ID == (CSteamID)groupId).First();
 
             var groupName = group.Name;
-            Vector3 spawn = new Vector3(group.Spawn.X, group.Spawn.Y, group.Spawn.Z);
-
+            //Vector3 spawn = new Vector3(group.Spawn.X, group.Spawn.Y, group.Spawn.Z);
+            
             var groupInfo = GroupManager.getGroupInfo((CSteamID)group.ID);
             if (groupInfo == null)
             {
@@ -78,6 +83,7 @@ namespace TeamPicker.UI
 
 
             User.Player.Player.ServerShowHint($"<color=white>Joined <b>{groupName}</b>", 5f);
+            Vector3 spawn = m_TeamInfoService.GetTeamSpawn(User);
             User.Player.Player.teleportToLocation(spawn, 0f);
 
             await UniTask.SwitchToThreadPool();
@@ -90,10 +96,10 @@ namespace TeamPicker.UI
             ulong groupId = m_Configuration.GetSection("Active_Teams:Team_Two").Get<ulong>();
             var group = m_Configuration.GetSection("Teams").Get<List<TeamModel>>()
                 .Where(teamModel => (CSteamID)teamModel.ID == (CSteamID)groupId).First();
-            User.PrintMessageAsync($"[Linq] {group.ID}, {group.Name}, {group.Spawn.ToString()}");
 
             var groupName = group.Name;
-            Vector3 spawn = new Vector3(group.Spawn.X, group.Spawn.Y, group.Spawn.Z);
+            //Vector3 spawn = new Vector3(group.Spawn.X, group.Spawn.Y, group.Spawn.Z);
+            
 
             var groupInfo = GroupManager.getGroupInfo((CSteamID)group.ID);
             if (groupInfo == null)
@@ -113,6 +119,7 @@ namespace TeamPicker.UI
 
 
             User.Player.Player.ServerShowHint($"<color=white>Joined <b>{groupName}</b>", 5f);
+            Vector3 spawn = m_TeamInfoService.GetTeamSpawn(User);
             User.Player.Player.teleportToLocation(spawn, 0f);
 
             await UniTask.SwitchToThreadPool();
