@@ -15,11 +15,11 @@ using UnityEngine;
 namespace TeamPicker.Services
 {
     [PluginServiceImplementation(Lifetime = ServiceLifetime.Transient)]
-    public class teamInfoService : ITeamInfoService
+    public class TeamInfoService : ITeamInfoService
     {
         private readonly IStringLocalizer m_StringLocalizer;
         private readonly IConfiguration m_Configuration;
-        public teamInfoService(IStringLocalizer stringLocalizer, IConfiguration configuration)
+        public TeamInfoService(IStringLocalizer stringLocalizer, IConfiguration configuration)
         {
             m_StringLocalizer = stringLocalizer;
             m_Configuration = configuration;

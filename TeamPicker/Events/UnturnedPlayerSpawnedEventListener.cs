@@ -16,20 +16,26 @@ using TeamPicker.Models;
 using TeamPicker.Services;
 using TeamPicker.UI;
 using UnityEngine;
+using OpenMod.Extensions.Games.Abstractions.Players;
+using Autofac;
+using Kits.Providers;
 
 namespace TeamPicker.Events
 {
     class UnturnedPlayerSpawnedEventListener : IEventListener<UnturnedPlayerSpawnedEvent>
     {
         private readonly IPluginAccessor<MyOpenModPlugin> m_pluginAccessor;
+        private readonly IPluginAccessor<Kits.Kits> m_pluginAccessorKits;
         private readonly IUIManager m_uIManager;
         private readonly IConfiguration m_Configuration;
         private readonly IUserManager m_UserManager;
         private readonly ITeamInfoService m_TeamInfoService;
-        public UnturnedPlayerSpawnedEventListener(IPluginAccessor<MyOpenModPlugin> pluginAccessor, IUIManager uIManager,
-            IConfiguration configuration, IUserManager userManager, ITeamInfoService teamInfoService)
+        public UnturnedPlayerSpawnedEventListener(IPluginAccessor<MyOpenModPlugin> pluginAccessor, IPluginAccessor<Kits.Kits> pluginAccessorKits,
+            IUIManager uIManager, IConfiguration configuration,
+            IUserManager userManager, ITeamInfoService teamInfoService)
         {
             m_pluginAccessor = pluginAccessor;
+            m_pluginAccessorKits = pluginAccessorKits;
             m_uIManager = uIManager;
             m_Configuration = configuration;
             m_UserManager = userManager;
@@ -76,6 +82,12 @@ namespace TeamPicker.Events
 
             Vector3 teamSpawn = m_TeamInfoService.GetTeamSpawn(unturnedUser);
             unturnedUser.Player.Player.teleportToLocation(teamSpawn, 0f);
+            string kitName = "starter";
+            if (m_pluginAccessorKits.Instance?.IsComponentAlive ?? false)
+            {
+                var service = m_pluginAccessorKits.Instance.LifetimeScope.Resolve<KitManager>();
+                await service.GiveKitAsync((IPlayerUser)user, kitName,null , forceGiveKit: true);
+            }
             return;
         }
     }

@@ -17,6 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DiFFoZ.Kits" Version="2.4.3" />
     <PackageReference Include="OpenMod.Unturned" Version="3.8.10+a033121c" />
     <PackageReference Include="Legacy2CPSWorkaround" Version="1.0.0">
       <PrivateAssets>All</PrivateAssets>
