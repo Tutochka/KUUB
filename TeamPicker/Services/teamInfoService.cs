@@ -44,5 +44,16 @@ namespace TeamPicker.Services
             if (groupID != (CSteamID)groupIdOne && groupID != (CSteamID)groupIdTwo) return false;
             return true;
         }
+
+        public CSteamID GetTeamID(UnturnedUser user)
+        {
+            if (!HasValidTeam(user))
+            {
+                return CSteamID.Nil;
+            }
+
+            CSteamID groupID = user.Player.Player.quests.groupID;
+            return groupID;
+        }
     }
 }

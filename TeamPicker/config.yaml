@@ -1,34 +1,38 @@
 Active_Teams:
-    Team_One: 3 # Use team ID.
-    Team_Two: 4 
+    Team_One: 3
+    Team_Two: 5
 
 Lobby_Spawn:
-    X: 30.0
-    Y: 30.0
-    Z: 30.0
+    X: 829.754516601563
+    Y: 37.9524307250977
+    Z: 135.110763549805
 
 Teams:
   - ID: 3
-    Name: "Blue"
+    Name: "Team3"
+    DefaultKit: "Team3"
     Spawn:
-        X: 500.0
-        y: 30.0
-        z: 100.0
+        X: -765.20458984375
+        y: 55.1531219482422
+        z: -769.81201171875
   - ID: 4
-    Name: "Red"
+    Name: "Team4"
+    DefaultKit: "Starter"
     Spawn:
         X: 500.0
-        y: 30.0
+        y: 500.0
         z: 600.0
   - ID: 5
-    Name: "Yellow"
+    Name: "Team5"
+    DefaultKit: "Team3"
     Spawn:
-        X: 500.0
-        y: 30.0
-        z: 100.0
+        X: -836.018005371094
+        y: 26.5450782775879
+        z: -466.572235107422
   - ID: 6
-    Name: "Green"
+    Name: "Team6"
+    DefaultKit: "Starter"
     Spawn:
         X: 500.0
-        y: 30.0
+        y: 500.0
         z: 600.0

@@ -12,6 +12,9 @@ using TeamPicker.Models;
 using System.Linq;
 using UnityEngine;
 using TeamPicker.Services;
+using Autofac;
+using Kits.Providers;
+using OpenMod.Extensions.Games.Abstractions.Players;
 
 namespace TeamPicker.UI
 {
@@ -20,13 +23,15 @@ namespace TeamPicker.UI
         private readonly MyOpenModPlugin m_Plugin;
         private readonly IConfiguration m_Configuration;
         private readonly ITeamInfoService m_TeamInfoService;
+        private readonly IPluginAccessor<Kits.Kits> m_pluginAccessorKits;
         public TeamPickSession(UnturnedUser user, IServiceProvider serviceProvider,
             IPluginAccessor<MyOpenModPlugin> pluginAccesor, IConfiguration configuration,
-            ITeamInfoService teamInfoService) : base(user, serviceProvider)
+            ITeamInfoService teamInfoService, IPluginAccessor<Kits.Kits> pluginAccessorKits) : base(user, serviceProvider)
         {
             m_Plugin = pluginAccesor.Instance!;
             m_Configuration = configuration;
             m_TeamInfoService = teamInfoService;
+            m_pluginAccessorKits = pluginAccessorKits;
         }
 
         public override ushort EffectId => 40119;
@@ -86,6 +91,13 @@ namespace TeamPicker.UI
             Vector3 spawn = m_TeamInfoService.GetTeamSpawn(User);
             User.Player.Player.teleportToLocation(spawn, 0f);
 
+            User.Player.Inventory.Clear();
+            if (m_pluginAccessorKits.Instance?.IsComponentAlive ?? false)
+            {
+                var service = m_pluginAccessorKits.Instance.LifetimeScope.Resolve<KitManager>();
+                await service.GiveKitAsync((IPlayerUser)User, group.DefaultKit, null, forceGiveKit: true);
+            }
+
             await UniTask.SwitchToThreadPool();
             await EndAsync();
         }
@@ -121,6 +133,13 @@ namespace TeamPicker.UI
             User.Player.Player.ServerShowHint($"<color=white>Joined <b>{groupName}</b>", 5f);
             Vector3 spawn = m_TeamInfoService.GetTeamSpawn(User);
             User.Player.Player.teleportToLocation(spawn, 0f);
+
+            User.Player.Inventory.Clear();
+            if (m_pluginAccessorKits.Instance?.IsComponentAlive ?? false)
+            {
+                var service = m_pluginAccessorKits.Instance.LifetimeScope.Resolve<KitManager>();
+                await service.GiveKitAsync((IPlayerUser)User, group.DefaultKit, null, forceGiveKit: true);
+            }
 
             await UniTask.SwitchToThreadPool();
             await EndAsync();

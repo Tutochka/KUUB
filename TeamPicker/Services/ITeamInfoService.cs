@@ -13,5 +13,6 @@ namespace TeamPicker.Services
     {
         Vector3 GetTeamSpawn(UnturnedUser user);
         bool HasValidTeam(UnturnedUser user);
+        CSteamID GetTeamID(UnturnedUser user);
     }
 }

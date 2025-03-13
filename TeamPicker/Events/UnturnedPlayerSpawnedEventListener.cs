@@ -19,6 +19,8 @@ using UnityEngine;
 using OpenMod.Extensions.Games.Abstractions.Players;
 using Autofac;
 using Kits.Providers;
+using Steamworks;
+using System.Linq;
 
 namespace TeamPicker.Events
 {
@@ -82,11 +84,15 @@ namespace TeamPicker.Events
 
             Vector3 teamSpawn = m_TeamInfoService.GetTeamSpawn(unturnedUser);
             unturnedUser.Player.Player.teleportToLocation(teamSpawn, 0f);
-            string kitName = "starter";
+            CSteamID teamID = m_TeamInfoService.GetTeamID(unturnedUser);
+
+            var team = m_Configuration.GetSection("Teams").Get<List<TeamModel>>()
+                .Where(teamModel => (CSteamID)teamModel.ID == teamID).First();
+
             if (m_pluginAccessorKits.Instance?.IsComponentAlive ?? false)
             {
                 var service = m_pluginAccessorKits.Instance.LifetimeScope.Resolve<KitManager>();
-                await service.GiveKitAsync((IPlayerUser)user, kitName,null , forceGiveKit: true);
+                await service.GiveKitAsync((IPlayerUser)user, team.DefaultKit, null , forceGiveKit: true);
             }
             return;
         }

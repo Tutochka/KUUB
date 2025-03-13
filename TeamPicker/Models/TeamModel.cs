@@ -11,6 +11,7 @@ namespace TeamPicker.Models
     {
         public ulong ID { get; set; }
         public string Name { get; set; } = "";
+        public string DefaultKit { get; set; } = "";
         public SpawnCoordinates Spawn { get; set; } = new SpawnCoordinates { X = 500.0f, Y = 500.0f, Z= 500.0f };
     }
 
