@@ -2,6 +2,11 @@ Active_Teams:
     Team_One: 3 # Use team ID.
     Team_Two: 4 
 
+Lobby_Spawn:
+    X: 30.0
+    Y: 30.0
+    Z: 30.0
+
 Teams:
   - ID: 3
     Name: "Blue"
