@@ -64,39 +64,8 @@ namespace TeamPicker.UI
             await UniTask.SwitchToMainThread();
 
             ulong groupId = m_Configuration.GetSection("Active_Teams:Team_One").Get<ulong>();
-            var group = m_Configuration.GetSection("Teams").Get<List<TeamModel>>()
-                .Where(teamModel => (CSteamID)teamModel.ID == (CSteamID)groupId).First();
 
-            var groupName = group.Name;
-            //Vector3 spawn = new Vector3(group.Spawn.X, group.Spawn.Y, group.Spawn.Z);
-            
-            var groupInfo = GroupManager.getGroupInfo((CSteamID)group.ID);
-            if (groupInfo == null)
-            {
-                GroupManager.addGroup((CSteamID)group.ID, group.Name);
-                var getInfo = GroupManager.getGroupInfo((CSteamID)group.ID);
-                User.PrintMessageAsync($"[GroupManager.addGroup] {getInfo.groupID}, {getInfo.name}");
-            }
-            else
-            {
-                User.PrintMessageAsync($"[GroupManager.addGroup] {groupInfo.groupID}, {groupInfo.name}");
-            }
-            GroupManager.deleteGroup((CSteamID)group.ID);
-            GroupManager.addGroup((CSteamID)group.ID, group.Name);
-
-            User.Player.Player.quests.ServerAssignToGroup((CSteamID)group.ID, EPlayerGroupRank.MEMBER, true);
-
-
-            User.Player.Player.ServerShowHint($"<color=white>Joined <b>{groupName}</b>", 5f);
-            Vector3 spawn = m_TeamInfoService.GetTeamSpawn(User);
-            User.Player.Player.teleportToLocation(spawn, 0f);
-
-            User.Player.Inventory.Clear();
-            if (m_pluginAccessorKits.Instance?.IsComponentAlive ?? false)
-            {
-                var service = m_pluginAccessorKits.Instance.LifetimeScope.Resolve<KitManager>();
-                await service.GiveKitAsync((IPlayerUser)User, group.DefaultKit, null, forceGiveKit: true);
-            }
+            m_TeamInfoService.AddToTeam(User, (CSteamID)groupId);
 
             await UniTask.SwitchToThreadPool();
             await EndAsync();
@@ -106,40 +75,8 @@ namespace TeamPicker.UI
             await UniTask.SwitchToMainThread();
 
             ulong groupId = m_Configuration.GetSection("Active_Teams:Team_Two").Get<ulong>();
-            var group = m_Configuration.GetSection("Teams").Get<List<TeamModel>>()
-                .Where(teamModel => (CSteamID)teamModel.ID == (CSteamID)groupId).First();
 
-            var groupName = group.Name;
-            //Vector3 spawn = new Vector3(group.Spawn.X, group.Spawn.Y, group.Spawn.Z);
-            
-
-            var groupInfo = GroupManager.getGroupInfo((CSteamID)group.ID);
-            if (groupInfo == null)
-            {
-                GroupManager.addGroup((CSteamID)group.ID, group.Name);
-                var getInfo = GroupManager.getGroupInfo((CSteamID)group.ID);
-                User.PrintMessageAsync($"[GroupManager.addGroup] {getInfo.groupID}, {getInfo.name}");
-            }
-            else
-            {
-                User.PrintMessageAsync($"[GroupManager.addGroup] {groupInfo.groupID}, {groupInfo.name}");
-            }
-            GroupManager.deleteGroup((CSteamID)group.ID);
-            GroupManager.addGroup((CSteamID)group.ID, group.Name);
-
-            User.Player.Player.quests.ServerAssignToGroup((CSteamID)group.ID, EPlayerGroupRank.MEMBER, true);
-
-
-            User.Player.Player.ServerShowHint($"<color=white>Joined <b>{groupName}</b>", 5f);
-            Vector3 spawn = m_TeamInfoService.GetTeamSpawn(User);
-            User.Player.Player.teleportToLocation(spawn, 0f);
-
-            User.Player.Inventory.Clear();
-            if (m_pluginAccessorKits.Instance?.IsComponentAlive ?? false)
-            {
-                var service = m_pluginAccessorKits.Instance.LifetimeScope.Resolve<KitManager>();
-                await service.GiveKitAsync((IPlayerUser)User, group.DefaultKit, null, forceGiveKit: true);
-            }
+            m_TeamInfoService.AddToTeam(User, (CSteamID)groupId);
 
             await UniTask.SwitchToThreadPool();
             await EndAsync();
