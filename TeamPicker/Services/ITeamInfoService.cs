@@ -15,5 +15,6 @@ namespace TeamPicker.Services
         bool HasValidTeam(UnturnedUser user);
         CSteamID GetTeamID(UnturnedUser user);
         void AddToTeam(UnturnedUser user, CSteamID TeamID);
+        bool IsTeamFull(CSteamID TeamID);
     }
 }

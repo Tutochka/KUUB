@@ -84,6 +84,7 @@ namespace TeamPicker.Events
 
             Vector3 teamSpawn = m_TeamInfoService.GetTeamSpawn(unturnedUser);
             unturnedUser.Player.Player.teleportToLocation(teamSpawn, 0f);
+            unturnedUser.Player.Inventory.Clear();
             CSteamID teamID = m_TeamInfoService.GetTeamID(unturnedUser);
 
             var team = m_Configuration.GetSection("Teams").Get<List<TeamModel>>()

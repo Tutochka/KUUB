@@ -65,6 +65,14 @@ namespace TeamPicker.UI
 
             ulong groupId = m_Configuration.GetSection("Active_Teams:Team_One").Get<ulong>();
 
+            bool isFull = m_TeamInfoService.IsTeamFull((CSteamID)groupId);
+            if (isFull)
+            {
+                User.Player.Player.ServerShowHint($"<color=red>This group is full, pick the other one!", 5f);
+                await UniTask.SwitchToThreadPool();
+                return;
+            }
+
             m_TeamInfoService.AddToTeam(User, (CSteamID)groupId);
 
             await UniTask.SwitchToThreadPool();
@@ -75,6 +83,14 @@ namespace TeamPicker.UI
             await UniTask.SwitchToMainThread();
 
             ulong groupId = m_Configuration.GetSection("Active_Teams:Team_Two").Get<ulong>();
+
+            bool isFull = m_TeamInfoService.IsTeamFull((CSteamID)groupId);
+            if (isFull)
+            {
+                User.Player.Player.ServerShowHint($"<color=red>This group is full, pick the other one!", 5f);
+                await UniTask.SwitchToThreadPool();
+                return;
+            }
 
             m_TeamInfoService.AddToTeam(User, (CSteamID)groupId);
 

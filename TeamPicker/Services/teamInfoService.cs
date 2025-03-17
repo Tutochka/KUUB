@@ -68,11 +68,13 @@ namespace TeamPicker.Services
                 .Where(teamModel => (CSteamID)teamModel.ID == TeamID).First();
 
             var groupInfo = GroupManager.getGroupInfo((CSteamID)group.ID);
+
             if (groupInfo == null)
             {
                 GroupManager.addGroup((CSteamID)group.ID, group.Name);
                 var getInfo = GroupManager.getGroupInfo((CSteamID)group.ID);
             }
+
             user.Player.Player.quests.ServerAssignToGroup(TeamID, EPlayerGroupRank.MEMBER, true);
 
             user.Player.Player.ServerShowHint($"<color=white>Joined <b>{group.Name}</b>", 5f);
@@ -88,5 +90,49 @@ namespace TeamPicker.Services
             }
         }
 
+        public bool IsTeamFull(CSteamID TeamID)
+        {
+            int groupOneCount = 0;
+            int groupTwoCount = 0;
+            ulong firstGroupId = m_Configuration.GetSection("Active_Teams:Team_One").Get<ulong>();
+            ulong secondGroupId = m_Configuration.GetSection("Active_Teams:Team_Two").Get<ulong>();
+            foreach (var player in Provider.clients)
+            {
+                if (player.playerID.group == (CSteamID)firstGroupId)
+                {
+                    groupOneCount++;
+                }
+                if (player.playerID.group == (CSteamID)secondGroupId)
+                {
+                    groupTwoCount++;
+                }
+            }
+
+            int groupAcount = 0;
+            int groupBcount = 0;
+
+            if (firstGroupId == (uint)TeamID)
+            {
+                groupAcount = groupOneCount;
+                groupBcount = groupTwoCount;
+            }
+            if (secondGroupId == (uint)TeamID)
+            {
+                groupAcount = groupTwoCount;
+                groupBcount = groupOneCount;
+            }
+            /*
+            if (groupAcount == 0 && groupBcount == 0) return false;
+            if (groupBcount == 0) return false;
+            if (Math.Abs(groupAcount - groupBcount) == 0) return false;
+            float div = (float)groupAcount / (float)groupBcount;
+            if (div == 1.25f) return true;
+            return false;*/
+
+            if (groupAcount == groupBcount) return false;
+            if (groupAcount < groupBcount) return false;
+            if (groupAcount - groupBcount >= 2) return true;
+            return false;
+        }
     }
 }
