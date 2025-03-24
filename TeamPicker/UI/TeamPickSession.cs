@@ -88,7 +88,6 @@ namespace TeamPicker.UI
             if (isFull)
             {
                 User.Player.Player.ServerShowHint($"<color=red>This group is full, pick the other one!", 5f);
-                await UniTask.SwitchToThreadPool();
                 return;
             }
 

@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace TeamPicker.Services
 {
-    [PluginServiceImplementation(Lifetime = ServiceLifetime.Transient)]
+    [PluginServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
     public class TeamInfoService : ITeamInfoService
     {
         private readonly IStringLocalizer m_StringLocalizer;
@@ -121,8 +121,8 @@ namespace TeamPicker.Services
                 groupAcount = groupTwoCount;
                 groupBcount = groupOneCount;
             }
-            /*
-            if (groupAcount == 0 && groupBcount == 0) return false;
+            
+            /*if (groupAcount == 0 && groupBcount == 0) return false;
             if (groupBcount == 0) return false;
             if (Math.Abs(groupAcount - groupBcount) == 0) return false;
             float div = (float)groupAcount / (float)groupBcount;
