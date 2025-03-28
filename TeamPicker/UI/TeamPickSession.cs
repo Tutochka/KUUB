@@ -15,6 +15,7 @@ using TeamPicker.Services;
 using Autofac;
 using Kits.Providers;
 using OpenMod.Extensions.Games.Abstractions.Players;
+using static TeamPicker.Services.TeamInfoService;
 
 namespace TeamPicker.UI
 {
@@ -65,13 +66,14 @@ namespace TeamPicker.UI
 
             ulong groupId = m_Configuration.GetSection("Active_Teams:Team_One").Get<ulong>();
 
-            bool isFull = m_TeamInfoService.IsTeamFull((CSteamID)groupId);
-            if (isFull)
+            IsTeamFullResult isFull = m_TeamInfoService.IsTeamFull((CSteamID)groupId, User.Player.Player.quests.groupID);
+            /*if (isFull)
             {
                 User.Player.Player.ServerShowHint($"<color=red>This group is full, pick the other one!", 5f);
                 await UniTask.SwitchToThreadPool();
+                await EndAsync();
                 return;
-            }
+            }*/
 
             m_TeamInfoService.AddToTeam(User, (CSteamID)groupId);
 
@@ -84,12 +86,14 @@ namespace TeamPicker.UI
 
             ulong groupId = m_Configuration.GetSection("Active_Teams:Team_Two").Get<ulong>();
 
-            bool isFull = m_TeamInfoService.IsTeamFull((CSteamID)groupId);
-            if (isFull)
+            IsTeamFullResult isFull = m_TeamInfoService.IsTeamFull((CSteamID)groupId, User.Player.Player.quests.groupID);
+            /*if (isFull)
             {
                 User.Player.Player.ServerShowHint($"<color=red>This group is full, pick the other one!", 5f);
+                await UniTask.SwitchToThreadPool();
+                await EndAsync();
                 return;
-            }
+            }*/
 
             m_TeamInfoService.AddToTeam(User, (CSteamID)groupId);
 

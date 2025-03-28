@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using static TeamPicker.Services.TeamInfoService;
 
 namespace TeamPicker.Services
 {
@@ -15,6 +16,6 @@ namespace TeamPicker.Services
         bool HasValidTeam(UnturnedUser user);
         CSteamID GetTeamID(UnturnedUser user);
         void AddToTeam(UnturnedUser user, CSteamID TeamID);
-        bool IsTeamFull(CSteamID TeamID);
+        IsTeamFullResult IsTeamFull(CSteamID selectedTeamID, CSteamID currentTeamId);
     }
 }

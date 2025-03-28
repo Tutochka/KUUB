@@ -3,11 +3,13 @@ using Kits.Providers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using OpenMod.API.Ioc;
 using OpenMod.API.Plugins;
 using OpenMod.Extensions.Games.Abstractions.Players;
 using OpenMod.Unturned.Users;
 using SDG.Unturned;
+using Serilog.Core;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -24,11 +26,13 @@ namespace TeamPicker.Services
         private readonly IStringLocalizer m_StringLocalizer;
         private readonly IConfiguration m_Configuration;
         private readonly IPluginAccessor<Kits.Kits> m_pluginAccessorKits;
-        public TeamInfoService(IStringLocalizer stringLocalizer, IConfiguration configuration, IPluginAccessor<Kits.Kits> pluginAccessorKits)
+        private readonly ILogger<MyOpenModPlugin> m_Logger;
+        public TeamInfoService(IStringLocalizer stringLocalizer, IConfiguration configuration, IPluginAccessor<Kits.Kits> pluginAccessorKits, ILogger<MyOpenModPlugin> logger)
         {
             m_StringLocalizer = stringLocalizer;
             m_Configuration = configuration;
             m_pluginAccessorKits = pluginAccessorKits;
+            m_Logger = logger;
         }
         public Vector3 GetTeamSpawn(UnturnedUser user)
         {
@@ -90,49 +94,54 @@ namespace TeamPicker.Services
             }
         }
 
-        public bool IsTeamFull(CSteamID TeamID)
+        public IsTeamFullResult IsTeamFull(CSteamID selectedTeamID, CSteamID currentTeamId)
         {
-            int groupOneCount = 0;
-            int groupTwoCount = 0;
-            ulong firstGroupId = m_Configuration.GetSection("Active_Teams:Team_One").Get<ulong>();
-            ulong secondGroupId = m_Configuration.GetSection("Active_Teams:Team_Two").Get<ulong>();
+            if (selectedTeamID == currentTeamId) return IsTeamFullResult.AlreadyInTeam;
+
+            CSteamID teamAId = (CSteamID)m_Configuration.GetSection("Active_Teams:Team_One").Get<ulong>();
+            CSteamID teamBId = (CSteamID)m_Configuration.GetSection("Active_Teams:Team_Two").Get<ulong>();
+            int countA = 0, countB = 0;
+            bool isPlayerInGroup;
+            if (currentTeamId == teamAId || currentTeamId == teamBId) isPlayerInGroup = true;
+            else
+                isPlayerInGroup = false;
+            if (selectedTeamID != teamAId && selectedTeamID != teamBId) return IsTeamFullResult.TeamNotValid; // Selection is none of the configured teams.
             foreach (var player in Provider.clients)
             {
-                if (player.playerID.group == (CSteamID)firstGroupId)
-                {
-                    groupOneCount++;
-                }
-                if (player.playerID.group == (CSteamID)secondGroupId)
-                {
-                    groupTwoCount++;
-                }
+                if (player.player.quests.groupID == teamAId)
+                    countA++;
+                if (player.player.quests.groupID == teamBId)
+                    countB++;
             }
 
-            int groupAcount = 0;
-            int groupBcount = 0;
-
-            if (firstGroupId == (uint)TeamID)
+            if (!isPlayerInGroup)
             {
-                groupAcount = groupOneCount;
-                groupBcount = groupTwoCount;
+                if (countA == 0 && countB == 0) return IsTeamFullResult.TeamNotFull;
+                if (countA == 0 && countB > 0 && selectedTeamID == teamBId) return IsTeamFullResult.TeamFull;
+                if (countB == 0 && countA > 0 && selectedTeamID == teamAId) return IsTeamFullResult.TeamFull;
+                if (countA == 0 && selectedTeamID == teamAId) return IsTeamFullResult.TeamNotFull;
+                if (countB == 0 && selectedTeamID == teamBId) return IsTeamFullResult.TeamNotFull;
+                if (countA == countB) return IsTeamFullResult.TeamNotFull;
+                if (countB - countA > 2 && selectedTeamID == teamAId) return IsTeamFullResult.TeamFull;
+                return IsTeamFullResult.UnexpectedResult;
             }
-            if (secondGroupId == (uint)TeamID)
-            {
-                groupAcount = groupTwoCount;
-                groupBcount = groupOneCount;
-            }
-            
-            /*if (groupAcount == 0 && groupBcount == 0) return false;
-            if (groupBcount == 0) return false;
-            if (Math.Abs(groupAcount - groupBcount) == 0) return false;
-            float div = (float)groupAcount / (float)groupBcount;
-            if (div == 1.25f) return true;
-            return false;*/
 
-            if (groupAcount == groupBcount) return false;
-            if (groupAcount < groupBcount) return false;
-            if (groupAcount - groupBcount >= 2) return true;
-            return false;
+            if (isPlayerInGroup)
+            {
+                if (countA == 0 && countB == 0) return IsTeamFullResult.UnexpectedResult;
+                return IsTeamFullResult.UnexpectedResult;
+            }
+
+            return IsTeamFullResult.UnexpectedResult;
+        }
+
+        public enum IsTeamFullResult
+        {
+            TeamFull,
+            TeamNotFull,
+            TeamNotValid,
+            AlreadyInTeam,
+            UnexpectedResult
         }
     }
 }
