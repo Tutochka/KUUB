@@ -67,18 +67,49 @@ namespace TeamPicker.UI
             ulong groupId = m_Configuration.GetSection("Active_Teams:Team_One").Get<ulong>();
 
             IsTeamFullResult isFull = m_TeamInfoService.IsTeamFull((CSteamID)groupId, User.Player.Player.quests.groupID);
-            /*if (isFull)
+            switch (isFull)
             {
-                User.Player.Player.ServerShowHint($"<color=red>This group is full, pick the other one!", 5f);
-                await UniTask.SwitchToThreadPool();
-                await EndAsync();
-                return;
-            }*/
-
-            m_TeamInfoService.AddToTeam(User, (CSteamID)groupId);
-
-            await UniTask.SwitchToThreadPool();
-            await EndAsync();
+                case IsTeamFullResult.TeamFull:
+                    User.Player.Player.ServerShowHint($"<color=red>This group is full, pick the other one!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.TeamNotFull:
+                    m_TeamInfoService.AddToTeam(User, (CSteamID)groupId);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.UnexpectedResult:
+                    User.Player.Player.ServerShowHint($"<color=red>UnexpectedResult!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.TeamNotValid:
+                    User.Player.Player.ServerShowHint($"<color=red>TeamNotValid!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.AlreadyInTeam:
+                    User.Player.Player.ServerShowHint($"<color=red>Already in team!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.endOfCheck0:
+                    User.Player.Player.ServerShowHint($"<color=red>endOfCheck0!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.endOfCheck1:
+                    User.Player.Player.ServerShowHint($"<color=red>endOfCheck1!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.endOfCheck2:
+                    User.Player.Player.ServerShowHint($"<color=red>endOfCheck2!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+            }
         }
         private async UniTask OnButtonTwoClickedAsync(string buttonName)
         {
@@ -87,18 +118,49 @@ namespace TeamPicker.UI
             ulong groupId = m_Configuration.GetSection("Active_Teams:Team_Two").Get<ulong>();
 
             IsTeamFullResult isFull = m_TeamInfoService.IsTeamFull((CSteamID)groupId, User.Player.Player.quests.groupID);
-            /*if (isFull)
+            switch (isFull)
             {
-                User.Player.Player.ServerShowHint($"<color=red>This group is full, pick the other one!", 5f);
-                await UniTask.SwitchToThreadPool();
-                await EndAsync();
-                return;
-            }*/
-
-            m_TeamInfoService.AddToTeam(User, (CSteamID)groupId);
-
-            await UniTask.SwitchToThreadPool();
-            await EndAsync();
+                case IsTeamFullResult.TeamFull:
+                    User.Player.Player.ServerShowHint($"<color=red>This group is full, pick the other one!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.TeamNotFull:
+                    m_TeamInfoService.AddToTeam(User, (CSteamID)groupId);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.UnexpectedResult:
+                    User.Player.Player.ServerShowHint($"<color=red>UnexpectedResult!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.TeamNotValid:
+                    User.Player.Player.ServerShowHint($"<color=red>TeamNotValid!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.AlreadyInTeam:
+                    User.Player.Player.ServerShowHint($"<color=red>Already in team!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.endOfCheck0:
+                    User.Player.Player.ServerShowHint($"<color=red>endOfCheck0!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.endOfCheck1:
+                    User.Player.Player.ServerShowHint($"<color=red>endOfCheck1!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+                case IsTeamFullResult.endOfCheck2:
+                    User.Player.Player.ServerShowHint($"<color=red>endOfCheck2!", 5f);
+                    await UniTask.SwitchToThreadPool();
+                    await EndAsync();
+                    return;
+            }
         }
 
         protected override async UniTask OnEndAsync()

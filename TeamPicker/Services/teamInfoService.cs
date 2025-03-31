@@ -96,7 +96,7 @@ namespace TeamPicker.Services
 
         public IsTeamFullResult IsTeamFull(CSteamID selectedTeamID, CSteamID currentTeamId)
         {
-            if (selectedTeamID == currentTeamId) return IsTeamFullResult.AlreadyInTeam;
+            if (selectedTeamID == currentTeamId) return IsTeamFullResult.AlreadyInTeam; // selected the same team
 
             CSteamID teamAId = (CSteamID)m_Configuration.GetSection("Active_Teams:Team_One").Get<ulong>();
             CSteamID teamBId = (CSteamID)m_Configuration.GetSection("Active_Teams:Team_Two").Get<ulong>();
@@ -117,22 +117,46 @@ namespace TeamPicker.Services
             if (!isPlayerInGroup)
             {
                 if (countA == 0 && countB == 0) return IsTeamFullResult.TeamNotFull;
-                if (countA == 0 && countB > 0 && selectedTeamID == teamBId) return IsTeamFullResult.TeamFull;
-                if (countB == 0 && countA > 0 && selectedTeamID == teamAId) return IsTeamFullResult.TeamFull;
+                if (countA == 0 && countB > 0 && selectedTeamID == teamBId) return IsTeamFullResult.TeamFull; // Selected team B is higher than 0, but A isn't
+                if (countB == 0 && countA > 0 && selectedTeamID == teamAId) return IsTeamFullResult.TeamFull; // Selected team A is higher than 0, but B isn't 
                 if (countA == 0 && selectedTeamID == teamAId) return IsTeamFullResult.TeamNotFull;
                 if (countB == 0 && selectedTeamID == teamBId) return IsTeamFullResult.TeamNotFull;
                 if (countA == countB) return IsTeamFullResult.TeamNotFull;
-                if (countB - countA > 2 && selectedTeamID == teamAId) return IsTeamFullResult.TeamFull;
-                return IsTeamFullResult.UnexpectedResult;
+                if (countB > countA && Math.Abs(countB - countA) >= 2 && selectedTeamID == teamAId) return IsTeamFullResult.TeamNotFull;
+                if (countA > countB && Math.Abs(countA - countB) >= 2 && selectedTeamID == teamBId) return IsTeamFullResult.TeamNotFull;
+
+                if (countB > countA && Math.Abs(countB - countA) >= 2 && selectedTeamID == teamBId) return IsTeamFullResult.TeamFull;
+                if (countA > countB && Math.Abs(countA - countB) >= 2 && selectedTeamID == teamAId) return IsTeamFullResult.TeamFull;
+
+                return IsTeamFullResult.TeamNotFull;
             }
 
             if (isPlayerInGroup)
             {
-                if (countA == 0 && countB == 0) return IsTeamFullResult.UnexpectedResult;
-                return IsTeamFullResult.UnexpectedResult;
+                if (countA == 0 && countB == 0) return IsTeamFullResult.UnexpectedResult; // can't have both groups empty, if player is in a group.
+                if (countA == 0 && countB == 1 && selectedTeamID == teamBId) return IsTeamFullResult.UnexpectedResult; // can't be because condition on top should filter same group
+                if (countA == 1 && countB == 0 && selectedTeamID == teamAId) return IsTeamFullResult.UnexpectedResult; // can't be because condition on top should filter same group
+                if (countA == 1 && countB == 0 && selectedTeamID == teamBId) return IsTeamFullResult.TeamNotFull; // other group is empty
+                if (countB == 1 && countA == 0 && selectedTeamID == teamAId) return IsTeamFullResult.TeamNotFull; // other group is empty
+                if (countA == 1 && countB == 1) return IsTeamFullResult.TeamFull; // can't, switching teams would leave any group empty.
+                if (countA == 1 && countB > 1 && selectedTeamID == teamAId) return IsTeamFullResult.TeamNotFull; // returns everytime your team has more people than the opposite
+                if (countB == 1 && countA > 1 && selectedTeamID == teamBId) return IsTeamFullResult.TeamNotFull; // returns everytime your team has more people than the opposite
+
+                if (countA > countB && Math.Abs(countA - countB) >= 1 && selectedTeamID == teamAId && countA <= 10) return IsTeamFullResult.TeamFull; // diff greater than one but below 10 
+                if (countB > countA && Math.Abs(countB - countA) >= 1 && selectedTeamID == teamBId && countB <= 10) return IsTeamFullResult.TeamFull; // diff greater than one but below 10.
+                if (countA > countB && Math.Abs(countA - countB) >= 2 && selectedTeamID == teamAId && countA > 10) return IsTeamFullResult.TeamFull; // diff greater than one but above 10.
+                if (countB > countA && Math.Abs(countB - countA) >= 2 && selectedTeamID == teamBId && countB > 10) return IsTeamFullResult.TeamFull; // diff greater than one but above 10.
+
+                if (countA > countB && Math.Abs(countA - countB) >= 1 && selectedTeamID == teamBId && countA <= 10) return IsTeamFullResult.TeamNotFull; // diff greater than one but below 10 
+                if (countB > countA && Math.Abs(countB - countA) >= 1 && selectedTeamID == teamAId && countB <= 10) return IsTeamFullResult.TeamNotFull; // diff greater than one but below 10.
+                if (countA > countB && Math.Abs(countA - countB) >= 2 && selectedTeamID == teamBId && countA > 10) return IsTeamFullResult.TeamNotFull; // diff greater than one but above 10.
+                if (countB > countA && Math.Abs(countB - countA) >= 2 && selectedTeamID == teamAId && countB > 10) return IsTeamFullResult.TeamNotFull; // diff greater than one but above 10.
+
+                if (countA == countB) return IsTeamFullResult.TeamNotFull;
+                return IsTeamFullResult.TeamNotFull;
             }
 
-            return IsTeamFullResult.UnexpectedResult;
+            return IsTeamFullResult.TeamNotFull;
         }
 
         public enum IsTeamFullResult
@@ -141,7 +165,10 @@ namespace TeamPicker.Services
             TeamNotFull,
             TeamNotValid,
             AlreadyInTeam,
-            UnexpectedResult
+            UnexpectedResult,
+            endOfCheck0,
+            endOfCheck1,
+            endOfCheck2
         }
     }
 }

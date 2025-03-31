@@ -11,17 +11,17 @@ using TeamPicker.Services;
 
 namespace TeamPicker.Commands
 {
-    [Command("DirectChangeTeam")]
-    [CommandAlias("DCTeam")]
-    [CommandAlias("DCT")]
+    [Command("ForceChangeTeam")]
+    [CommandAlias("FCTeam")]
+    [CommandAlias("FCT")]
     [CommandDescription("DIRECTLY CHANGES TEAM")]
-    public class DirectChangeTeamCommand : UnturnedCommand
+    public class ForceChangeTeamCommand : UnturnedCommand
     {
         private readonly IPluginAccessor<MyOpenModPlugin> m_pluginAccessor;
         private readonly ITeamInfoService m_teamInfoService;
         private readonly IUserManager m_userManager;
 
-        public DirectChangeTeamCommand(IPluginAccessor<MyOpenModPlugin> pluginAccessor, IServiceProvider serviceProvider, ITeamInfoService teamInfoService, IUserManager userManager) : base(serviceProvider)
+        public ForceChangeTeamCommand(IPluginAccessor<MyOpenModPlugin> pluginAccessor, IServiceProvider serviceProvider, ITeamInfoService teamInfoService, IUserManager userManager) : base(serviceProvider)
         {
             m_pluginAccessor = pluginAccessor;
             m_teamInfoService = teamInfoService;
